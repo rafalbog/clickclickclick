@@ -1,0 +1,50 @@
+[project]
+name = "click3"
+version = "0.1.0"
+description = "A framework for android and computer use by LLMs, both local and remote."
+authors = [
+    { name = "NAME", email = "a@b.c" }
+]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.1.7",
+    "requests>=2.32.3",
+    "pytest>=8.3.4",
+    "pyautogui>=0.9.54",
+    "fastapi>=0.115.6",
+    "futures>=3.0.5",
+    "pillow",
+    "py-applescript>=1.0.3",
+    "pydantic>=2.10.3",
+    "uvicorn>=0.32.1",
+    "pyaml>=24.9.0",
+    "pre-commit",
+    "google-generativeai>=0.8",
+    "openai==1.55.0",
+    "ollama>=0.4.4",
+    "google-ai-generativelanguage>=0.6.0",
+    "black",
+]
+
+[tool.pdm]
+distribution = true
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.build]
+includes = ["clickclickclick", "main.py", "api.py"]
+
+[project.scripts]
+click3 = "main:cli"
+
+[project.optional-dependencies]
+test = [
+    "pytest>=4.6",
+]
+
+[tool.pdm.scripts]
+generate-requirements = "pdm export -f requirements --without-hashes"

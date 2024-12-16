@@ -1,0 +1,29 @@
+function_declarations:
+  - name: move_mouse
+    description: Move the mouse to the specified coordinates.
+    parameters:
+      type: object
+      properties:
+        x:
+          type: integer
+          description: The x-coordinate to move the mouse to.
+        y:
+          type: integer
+          description: The y-coordinate to move the mouse to.
+        observation:
+          type: string
+          description: Observation of current state and why next step is move_mouse
+      required:
+        - x
+        - y
+        - observation
+  - name: click_mouse
+    description: Perform a mouse click.
+    parameters:
+      type: object
+      properties:
+        observation:
+          type: string
+          description: Observation of current state and why next step is click_mouse
+      required:
+        - observation

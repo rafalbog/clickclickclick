@@ -1,0 +1,50 @@
+gemini:
+  api_key: !ENV GEMINI_API_KEY
+  model_name: gemini-1.5-flash
+  image_width: 768
+  image_height: 768
+  output_width: 1000
+  output_height: 1000
+  planner:
+    image_width: 768
+    android:
+      image_width: 768
+    osx:
+      image_width: 768
+    generation_config:
+      temperature: 0.7
+      top_p: 0.95
+      top_k: 40
+      max_output_tokens: 200
+      response_mime_type: text/plain
+  finder:
+    image_width: 768
+    android:
+      image_width: 768
+    osx:
+      image_width: 768
+    generation_config:
+      temperature: 0.95
+      top_p: 0.99
+      top_k: 20
+      max_output_tokens: 80
+      response_mime_type: application/json
+
+openai:
+  api_key: !ENV  AZURE_OPENAI_API_KEY # OPENAI_API_KEY / AZURE_OPENAI_API_KEY
+  model_name: 4o-new-aug # gpt-4o-mini / azure's model name
+  image_width: 512
+  image_height: 512
+  output_width: 512
+  output_height: 512
+  azure_endpoint: https://openai-fallible.openai.azure.com
+  api_type: azure  # openai / azure
+#   base_url: https://api.x.ai/v1/ # either base_url or azure_endpoint
+  api_version: 2024-10-21
+
+ollama:
+  image_width: 1120
+  image_height: 1120
+  model_name: llama3.2:latest  # llama3.2:latest doesnt support image
+  finder:
+    model_name: llama3.2-vision  # llama3.2-vision doesnt support function calling yet
