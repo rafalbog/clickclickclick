@@ -22,7 +22,14 @@ The best result currently comes from using GPT 4o/4o-mini as planner and Gemini 
 
 ![model recommendations](https://github.com/user-attachments/assets/355865f9-704b-483c-a23b-5dc9be54aeda)
 
-#### How to install
+
+#### Prerequisites
+
+1. This project needs `adb` to be installed on your local machine where the code is being executed.
+2. Enable USB debugging on the android phone.
+3. Python >= 3.11
+
+# How to install
 
 Clone the repository and navigate into the project directory:
 
@@ -45,13 +52,13 @@ pip install -r requirements.txt
 ```
 
 
-#### How to use
+# How to use
 
-Put your model specific settings in config/models.yaml and export the keys specified in the yaml file.
+Put your model specific settings in `config/models.yaml` and export the keys specified in the yaml file.
 
 ## As CLI tool
 
-Install the tool
+### Install the tool
 
 (Ensure `OPENAI_API_KEY` and `GEMINI_API_KEY` API keys in the environment)
 
@@ -60,9 +67,11 @@ pip install <repo-tar>
 ```
 
 ```sh
-click3 run open google.com in browser
+click3 run open uber app
 ```
 
+
+## As Script
 
 ### Setup
 
@@ -150,12 +159,6 @@ curl -X POST "http://localhost:8000/execute" -H "Content-Type: application/json"
 {"result":true}
 ```
 
-#### Prerequisites
-
-1. This project needs adb to be installed on your local machine where the code is being executed.
-2. Enable USB debugging on the android phone.
-3. Python >= 3.11
-
 
 #### How to contribute
 
@@ -164,8 +167,8 @@ Contributions are welcome! Please begin by opening an issue to discuss your idea
 
 #### Things to do
 
-[ ] Enable local models via Ollama on Android
-[ ] Make computer use fully functional
+* [ ] Enable local models via Ollama on Android
+* [ ] Make computer use fully functional
 
 
 
