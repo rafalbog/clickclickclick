@@ -2,20 +2,25 @@
 
 ### A framework to enable autonomous android and computer use using any LLM (local or remote)
 
+![click3](https://github.com/user-attachments/assets/103afd59-ae29-45d2-9d77-75375b1538a0)
+
 ## Demos
 
-![](https://github.com/user-attachments/assets/7cdbebb7-0ac4-4c20-8d67-f3c07cd4ab01)
+### create a draft gmail to rob@gmail.com and ask him if he is free for lunch on coming saturday at 1PM. Congratulate on the baby - write one para.
+https://github.com/user-attachments/assets/7cdbebb7-0ac4-4c20-8d67-f3c07cd4ab01
 
+### Can you open the browser at https://www.google.com/maps/ and answer the corresponding task: Find bus stops in Alanson, MI
+https://github.com/user-attachments/assets/eb5dc968-206b-422d-aa3c-20c48bac3fed
 
-![](https://github.com/user-attachments/assets/eb5dc968-206b-422d-aa3c-20c48bac3fed)
-
-
-![](https://github.com/user-attachments/assets/68fc3475-2299-4254-8673-3123356177b5)
+### start a 3+2 game on lichess
+https://github.com/user-attachments/assets/68fc3475-2299-4254-8673-3123356177b5
 
 
 Currently supporting local models via Ollama (Llama 3.2-vision), Gemini, GPT 4o. The current code is highly experimental and will evolve in future commits. Please use at your own risk.
 
-The best result currently comes from using GPT 4o as planner and Gemini Pro or Flash as finder.
+The best result currently comes from using GPT 4o/4o-mini as planner and Gemini Pro/Flash as finder.
+
+![model recommendations](https://github.com/user-attachments/assets/355865f9-704b-483c-a23b-5dc9be54aeda)
 
 #### How to install
 
@@ -42,9 +47,15 @@ pip install -r requirements.txt
 
 #### How to use
 
-Put your model specific settings in config/models.yaml and export the keys specified in the yaml file. 
+Put your model specific settings in config/models.yaml and export the keys specified in the yaml file.
 
 ## As CLI tool
+
+Install the tool
+
+```sh
+pip install <repo-whl>
+```
 
 ```sh
 ./click3 run open google.com in browser
@@ -66,13 +77,17 @@ You will be prompted to choose the planner and finder models and provide any nec
 To execute a task, use the `run` command. The basic usage is:
 
 ```sh
+pip install <repo-whl>
+```
+
+```sh
 ./click3 run <task-prompt>
 ```
 
 #### Options
 
 - `--platform`: Specifies the platform to use, either `android` or `osx`. Default is `android`.
-  
+
   ```sh
   python main.py run "example task" --platform=osx
   ```
@@ -111,7 +126,7 @@ This endpoint executes a task based on the provided task prompt, platform, plann
 - `finder_model` (string, optional): The finder model to be used for finding elements to interact with. Default is "gemini". Supported models: "gemini", "openai", "ollama".
 
 #### Response:
-- `200 OK`: 
+- `200 OK`:
   - `result` (object): The result of the task execution.
 - `400 Bad Request`:
   - `detail` (string): Description of why the request is invalid (e.g., unsupported platform, unsupported planner model, unsupported finder model).
@@ -121,7 +136,7 @@ This endpoint executes a task based on the provided task prompt, platform, plann
 #### Example Request:
 ```bash
 curl -X POST "http://localhost:8000/execute" -H "Content-Type: application/json" -d '{
-  "task_prompt": "Take a screenshot",
+  "task_prompt": "Open uber app",
   "platform": "android",
   "planner_model": "gemini",
   "finder_model": "openai"
@@ -140,7 +155,7 @@ curl -X POST "http://localhost:8000/execute" -H "Content-Type: application/json"
 }
 ```
 
-#### Prerequisites 
+#### Prerequisites
 
 This project needs adb to be installed on your local machine where the code is being executed.
 
@@ -154,7 +169,7 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 #### Things to do
 
-Three components- 
+Three components-
 
 1. Planner
 2. Finder
