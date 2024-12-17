@@ -9,11 +9,9 @@ from clickclickclick.planner.openai import ChatGPTPlanner
 from clickclickclick.finder.local_ollama import OllamaFinder
 from clickclickclick.finder.openai import OpenAIFinder
 from clickclickclick.planner.local_ollama import OllamaPlanner
-from clickclickclick.config import setup_logging, get_config
+from clickclickclick.config import get_config
 import uvicorn
 
-# Set up logging
-setup_logging()
 
 app = FastAPI()
 
@@ -45,7 +43,7 @@ def execute_task_api(request: TaskRequest):
         executor.screenshot_as_base64 = True
         planner = ChatGPTPlanner(c)
     elif planner_model == "gemini":
-        executor.screenshot_as_base64 = True
+        executor.screenshot_as_tempfile = True
         planner = GeminiPlanner(c)
     elif planner_model == "ollama":
         executor.screenshot_as_tempfile = True

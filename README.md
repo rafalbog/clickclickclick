@@ -6,7 +6,7 @@
 
 ## Demos
 
-### create a draft gmail to rob@gmail.com and ask him if he is free for lunch on coming saturday at 1PM. Congratulate on the baby - write one para.
+### create a draft gmail and ask him if he is free for lunch on coming saturday at 1PM. Congratulate on the baby - write one para.
 https://github.com/user-attachments/assets/7cdbebb7-0ac4-4c20-8d67-f3c07cd4ab01
 
 ### Can you open the browser at https://www.google.com/maps/ and answer the corresponding task: Find bus stops in Alanson, MI
@@ -27,7 +27,7 @@ The best result currently comes from using GPT 4o/4o-mini as planner and Gemini 
 Clone the repository and navigate into the project directory:
 
 ```sh
-git clone https://github.com/yourusername/clickclickclick
+git clone https://github.com/BandarLabs/clickclickclick
 cd clickclickclick
 ```
 
@@ -53,12 +53,14 @@ Put your model specific settings in config/models.yaml and export the keys speci
 
 Install the tool
 
+(Ensure `OPENAI_API_KEY` and `GEMINI_API_KEY` API keys in the environment)
+
 ```sh
-pip install <repo-whl>
+pip install <repo-tar>
 ```
 
 ```sh
-./click3 run open google.com in browser
+click3 run open google.com in browser
 ```
 
 
@@ -77,11 +79,7 @@ You will be prompted to choose the planner and finder models and provide any nec
 To execute a task, use the `run` command. The basic usage is:
 
 ```sh
-pip install <repo-whl>
-```
-
-```sh
-./click3 run <task-prompt>
+python main.py run <task-prompt>
 ```
 
 #### Options
@@ -114,6 +112,10 @@ python main.py run "Open Google news" --platform=android --planner-model=openai 
 
 ## Use as an API
 
+### To run the app
+```sh
+uvicorn api:app
+```
 ### POST /execute
 
 #### Description:
@@ -138,61 +140,33 @@ This endpoint executes a task based on the provided task prompt, platform, plann
 curl -X POST "http://localhost:8000/execute" -H "Content-Type: application/json" -d '{
   "task_prompt": "Open uber app",
   "platform": "android",
-  "planner_model": "gemini",
-  "finder_model": "openai"
+  "planner_model": "openai",
+  "finder_model": "gemini"
 }'
 ```
 
 #### Example Response:
 ```json
-{
-  "result": {
-    "status": "success",
-    "data": {
-      // actual task execution result
-    }
-  }
-}
+{"result":true}
 ```
 
 #### Prerequisites
 
-This project needs adb to be installed on your local machine where the code is being executed.
-
-#### Project structure
+1. This project needs adb to be installed on your local machine where the code is being executed.
+2. Enable USB debugging on the android phone.
+3. Python >= 3.11
 
 
 #### How to contribute
 
-Contributions are welcome! Please open an issue or submit a pull request.
+Contributions are welcome! Please begin by opening an issue to discuss your ideas. Once the issue is reviewed and assigned, you can proceed with submitting a pull request.
 
 
 #### Things to do
 
-Three components-
+[ ] Enable local models via Ollama on Android
+[ ] Make computer use fully functional
 
-1. Planner
-2. Finder
-3. Executor
-
-
-pip install -r requirements.txt
-
-uvicorn api:app --reload
-
-curl -X POST "http://127.0.0.1:8000/execute" -H "Content-Type: application/json" -d '{
-    "task_prompt": "Open Safari"
-}'
-
-
-
-Pre-commit -
-
-
-pre-commit install
-pre-commit autoupdate
-
-pre-commit run --all-files
 
 
 ## License
