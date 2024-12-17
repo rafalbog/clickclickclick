@@ -6,7 +6,7 @@
 
 ## Demos
 
-### create a draft gmail and ask him if he is free for lunch on coming saturday at 1PM. Congratulate on the baby - write one para.
+### create a draft gmail to someone@gmail.com and ask them if they are free for lunch on coming saturday at 1PM. Congratulate on the baby - write one para.
 https://github.com/user-attachments/assets/7cdbebb7-0ac4-4c20-8d67-f3c07cd4ab01
 
 ### Can you open the browser at https://www.google.com/maps/ and answer the corresponding task: Find bus stops in Alanson, MI
