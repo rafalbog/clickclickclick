@@ -3,7 +3,7 @@ name = "click3"
 version = "0.1.0"
 description = "A framework for android and computer use by LLMs, both local and remote."
 authors = [
-    { name = "NAME", email = "a@b.c" }
+    { name = "BandarLabs", email = "74_thetas_oranges@icloud.com" }
 ]
 license = { text = "MIT" }
 readme = "README.md"

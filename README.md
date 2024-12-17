@@ -75,13 +75,13 @@ click3 run open uber app
 
 ### Setup
 
-Before running any tasks, you need to configure your planner and finder models using the `setup` command:
+By default, planner is `openai` and finder is `gemini`.
 
-```sh
-python main.py setup
-```
+You can change the default configuration in `config/models.yaml`
 
-You will be prompted to choose the planner and finder models and provide any necessary API keys.
+Before running any tasks, you need to configure respective keys like `OPENAI_API_KEY` and `GEMINI_API_KEY` in the environment.
+
+Gemini Flash gives free 15 API calls - https://aistudio.google.com/apikey
 
 ### Running Tasks
 
