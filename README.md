@@ -63,7 +63,7 @@ Put your model specific settings in `config/models.yaml` and export the keys spe
 (Ensure `OPENAI_API_KEY` and `GEMINI_API_KEY` API keys in the environment)
 
 ```sh
-pip install <repo-tar>
+pip install https://github.com/user-attachments/files/18163076/click3-0.2.0.tar.gz
 ```
 
 ```sh
