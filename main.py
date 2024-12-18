@@ -18,6 +18,113 @@ def cli():
     pass
 
 
+def get_executor(platform):
+    if platform.lower() == "osx":
+        return MacExecutor()
+    return AndroidExecutor()
+
+
+def get_planner(planner_model, config, executor):
+    if planner_model.lower() == "openai":
+        executor.screenshot_as_base64 = True
+        return ChatGPTPlanner(config)
+    elif planner_model.lower() == "gemini":
+        executor.screenshot_as_tempfile = True
+        return GeminiPlanner(config)
+    elif planner_model.lower() == "ollama":
+        executor.screenshot_as_tempfile = True
+        return OllamaPlanner(config, executor)
+    raise ValueError(f"Unsupported planner model: {planner_model}")
+
+
+def get_finder(finder_model, config, executor):
+    if finder_model.lower() == "openai":
+        return OpenAIFinder(config, executor)
+    elif finder_model.lower() == "gemini":
+        return GeminiFinder(config, executor)
+    elif finder_model.lower() == "ollama":
+        return OllamaFinder(config, executor)
+    raise ValueError(f"Unsupported finder model: {finder_model}")
+
+
+def setup_environment_variables(planner=None, finder=None):
+    if planner and planner.lower() == "gemini":
+        os.environ["GEMINI_API_KEY"] = click.prompt("Enter your Gemini API key", hide_input=True)
+    elif planner and planner.lower() == "4o":
+        setup_openai_or_azure()
+    elif planner and planner.lower() == "ollama":
+        os.environ["OLLAMA_MODEL_NAME"] = click.prompt(
+            "Select the model name (press enter to use 'llama3.2:latest')",
+            default="llama3.2:latest",
+        )
+
+    if not finder:
+        finder = planner
+
+    if finder and finder.lower() == "gemini":
+        os.environ["GEMINI_API_KEY"] = click.prompt(
+            "Enter your Gemini API key (press enter to use existing)",
+            hide_input=True,
+            default=os.getenv("GEMINI_API_KEY", ""),
+        )
+    elif finder and finder.lower() == "4o":
+        setup_openai_or_azure(existing=True)
+    elif finder and finder.lower() == "ollama":
+        os.environ["OLLAMA_MODEL_NAME"] = click.prompt(
+            "Select the model name (press enter to use 'llama3.2:latest')",
+            default=os.getenv("OLLAMA_MODEL_NAME", "llama3.2:latest"),
+        )
+
+
+def setup_openai_or_azure(existing=False):
+    version = click.prompt(
+        (
+            "Is it OpenAI or Azure version? (press enter to use existing)"
+            if existing
+            else "Is it OpenAI or Azure version?"
+        ),
+        type=str,
+        default=os.getenv("OPENAI_API_TYPE", "openai"),
+    )
+    if version.lower() == "openai":
+        os.environ["AZURE_OPENAI_API_KEY"] = click.prompt(
+            (
+                "Enter your OpenAI API key (press enter to use existing)"
+                if existing
+                else "Enter your OpenAI API key"
+            ),
+            hide_input=True,
+            default=os.getenv("AZURE_OPENAI_API_KEY", ""),
+        )
+        os.environ["OPENAI_API_TYPE"] = "openai"
+    elif version.lower() == "azure":
+        os.environ["AZURE_OPENAI_API_KEY"] = click.prompt(
+            (
+                "Enter your Azure API key (press enter to use existing)"
+                if existing
+                else "Enter your Azure API key"
+            ),
+            hide_input=True,
+            default=os.getenv("AZURE_OPENAI_API_KEY", ""),
+        )
+        os.environ["AZURE_OPENAI_MODEL_NAME"] = click.prompt(
+            "Enter your Azure model name (press enter to use existing)",
+            type=str,
+            default=os.getenv("AZURE_OPENAI_MODEL_NAME", ""),
+        )
+        os.environ["AZURE_OPENAI_ENDPOINT"] = click.prompt(
+            "Enter your Azure endpoint (press enter to use existing)",
+            type=str,
+            default=os.getenv("AZURE_OPENAI_ENDPOINT", ""),
+        )
+        os.environ["AZURE_OPENAI_API_VERSION"] = click.prompt(
+            "Enter your Azure API version (press enter to use existing)",
+            type=str,
+            default=os.getenv("AZURE_OPENAI_API_VERSION", ""),
+        )
+        os.environ["OPENAI_API_TYPE"] = "azure"
+
+
 @click.command()
 @click.argument("task_prompt", nargs=-1)
 @click.option("--platform", default="android", help="The platform to use, 'android' or 'osx'.")
@@ -37,38 +144,17 @@ def run(task_prompt, platform, planner_model, finder_model):
     platform, planner model, and finder model.
     """
     task_prompt = " ".join(task_prompt)
+    config = get_config(platform, planner_model, finder_model)
 
-    c = get_config(platform, planner_model, finder_model)
-
-    if platform == "osx":
-        executor = MacExecutor()
-    else:
-        executor = AndroidExecutor()
-
-    if planner_model == "openai":
-        executor.screenshot_as_base64 = True
-        planner = ChatGPTPlanner(c)
-    elif planner_model == "gemini":
-        executor.screenshot_as_tempfile = True
-        planner = GeminiPlanner(c)
-    elif planner_model == "ollama":
-        executor.screenshot_as_tempfile = True
-        planner = OllamaPlanner(c, executor)
-
-    if finder_model == "openai":
-        finder = OpenAIFinder(c, executor)
-    elif finder_model == "gemini":
-        finder = GeminiFinder(c, executor)
-    elif finder_model == "ollama":
-        finder = OllamaFinder(c, executor)
-    elif finder_model == "mlx":
-        finder = MLXFinder(c, executor)
+    executor = get_executor(platform)
+    planner = get_planner(planner_model, config, executor)
+    finder = get_finder(finder_model, config, executor)
 
     if not task_prompt:
-        task_prompt = c.SAMPLE_TASK_PROMPT
+        task_prompt = config.SAMPLE_TASK_PROMPT
 
     result = execute_with_timeout(
-        execute_task, c.TASK_TIMEOUT_IN_SECONDS, task_prompt, executor, planner, finder, c
+        execute_task, config.TASK_TIMEOUT_IN_SECONDS, task_prompt, executor, planner, finder, config
     )
 
     if result is not None:
@@ -79,33 +165,6 @@ def run(task_prompt, platform, planner_model, finder_model):
 def setup():
     """Setup command to configure planner and finder"""
     planner = click.prompt("Choose planner model ('gemini', '4o', or 'ollama')", type=str)
-
-    if planner.lower() == "gemini":
-        gemini_api_key = click.prompt("Enter your Gemini API key", hide_input=True)
-        os.environ["GEMINI_API_KEY"] = gemini_api_key
-    elif planner.lower() == "4o":
-        version = click.prompt("Is it OpenAI or Azure version?", type=str)
-        if version.lower() == "openai":
-            openai_api_key = click.prompt("Enter your OpenAI API key", hide_input=True)
-            os.environ["AZURE_OPENAI_API_KEY"] = openai_api_key
-            os.environ["OPENAI_API_TYPE"] = "openai"
-        elif version.lower() == "azure":
-            azure_api_key = click.prompt("Enter your Azure API key", hide_input=True)
-            os.environ["AZURE_OPENAI_API_KEY"] = azure_api_key
-            azure_model_name = click.prompt("Enter your Azure model name", type=str)
-            os.environ["AZURE_OPENAI_MODEL_NAME"] = azure_model_name
-            azure_endpoint = click.prompt("Enter your Azure endpoint", type=str)
-            os.environ["AZURE_OPENAI_ENDPOINT"] = azure_endpoint
-            azure_api_version = click.prompt("Enter your Azure API version", type=str)
-            os.environ["AZURE_OPENAI_API_VERSION"] = azure_api_version
-            os.environ["OPENAI_API_TYPE"] = "azure"
-    elif planner.lower() == "ollama":
-        ollama_model_name = click.prompt(
-            "Select the model name (press enter to use 'llama3.2:latest')",
-            default="llama3.2:latest",
-        )
-        os.environ["OLLAMA_MODEL_NAME"] = ollama_model_name
-
     finder = click.prompt(
         "Choose finder model ('gemini', '4o', or 'ollama') (press enter to use '{}')".format(
             planner
@@ -114,59 +173,7 @@ def setup():
         default=planner,
     )
 
-    if finder.lower() == "gemini":
-        gemini_api_key = click.prompt(
-            "Enter your Gemini API key (press enter to use existing)",
-            hide_input=True,
-            default=os.getenv("GEMINI_API_KEY", ""),
-        )
-        os.environ["GEMINI_API_KEY"] = gemini_api_key
-    elif finder.lower() == "4o":
-        version = click.prompt(
-            "Is it OpenAI or Azure version? (press enter to use existing)",
-            type=str,
-            default=os.getenv("OPENAI_API_TYPE", "openai"),
-        )
-        if version.lower() == "openai":
-            openai_api_key = click.prompt(
-                "Enter your OpenAI API key (press enter to use existing)",
-                hide_input=True,
-                default=os.getenv("AZURE_OPENAI_API_KEY", ""),
-            )
-            os.environ["AZURE_OPENAI_API_KEY"] = openai_api_key
-            os.environ["OPENAI_API_TYPE"] = "openai"
-        elif version.lower() == "azure":
-            azure_api_key = click.prompt(
-                "Enter your Azure API key (press enter to use existing)",
-                hide_input=True,
-                default=os.getenv("AZURE_OPENAI_API_KEY", ""),
-            )
-            os.environ["AZURE_OPENAI_API_KEY"] = azure_api_key
-            azure_model_name = click.prompt(
-                "Enter your Azure model name (press enter to use existing)",
-                type=str,
-                default=os.getenv("AZURE_OPENAI_MODEL_NAME", ""),
-            )
-            os.environ["AZURE_OPENAI_MODEL_NAME"] = azure_model_name
-            azure_endpoint = click.prompt(
-                "Enter your Azure endpoint (press enter to use existing)",
-                type=str,
-                default=os.getenv("AZURE_OPENAI_ENDPOINT", ""),
-            )
-            os.environ["AZURE_OPENAI_ENDPOINT"] = azure_endpoint
-            azure_api_version = click.prompt(
-                "Enter your Azure API version (press enter to use existing)",
-                type=str,
-                default=os.getenv("AZURE_OPENAI_API_VERSION", ""),
-            )
-            os.environ["AZURE_OPENAI_API_VERSION"] = azure_api_version
-            os.environ["OPENAI_API_TYPE"] = "azure"
-    elif finder.lower() == "ollama":
-        ollama_model_name = click.prompt(
-            "Select the model name (press enter to use 'llama3.2:latest')",
-            default=ollama_model_name,
-        )
-        os.environ["OLLAMA_MODEL_NAME"] = ollama_model_name
+    setup_environment_variables(planner, finder)
 
 
 cli.add_command(run)
