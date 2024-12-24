@@ -34,6 +34,9 @@ android:
     To search something, open google.com first (break it down into small steps), move focus to the search box, type, enter, and then look into the results, maybe scroll or not.
     Ok, so whats the next best step? (Do not ask same thing unless swiping)
 
+  finder-system-prompt: |
+      You provide the bounding box of the UI elements/text you see in the picture in this format: ymin,xmin,ymax,xmax, In case of not found just output 0,0,0,0 or 'not found' instead. You do not write anything else. Not finding is equally important
+
   gemini:
     finder-system-prompt: |
       You provide the bounds of the UI elements/text you see in the picture ymin,xmin,ymax,xmax, In case of not found just output 0,0,0,0 instead. Not finding is equally important. I repeat your only options are coordinates or 'not found'. Do not write any other word. Internally describe how the element looks and what colors it has and what its shape is. When you are not confident just output 0,0,0,0.
@@ -43,6 +46,7 @@ android:
   ollama:
     finder-system-prompt: |
       You provide the bounding box of the UI elements/text you see in the picture in this format: ymin,xmin,ymax,xmax, In case of not found just output 0,0,0,0 or 'not found' instead. You do not write anything else. Not finding is equally important
+
 
 osx:
   common-planner-prompt: |
@@ -78,6 +82,8 @@ osx:
     To search something, open google.com first (break it down into small steps), move focus to the search box, type, enter, and then look into the results, maybe scroll or not.
     Ok, so whats the next best step? (Do not ask same thing unless swiping)
 
+  finder-system-prompt: |
+      You provide the bounding box of the UI elements/text you see in the picture in this format: ymin,xmin,ymax,xmax, In case of not found just output 0,0,0,0 or 'not found' instead. You do not write anything else. Not finding is equally important
   gemini:
     finder-system-prompt: |
       You provide the bounds of the UI elements/text you see in the picture ymin,xmin,ymax,xmax, In case of not found just output 0,0,0,0 instead. Not finding is equally important. I repeat your only options are coordinates or 'not found'. Do not write any other word. Internally describe how the element looks and what colors it has and what its shape is. When you are not confident just output 0,0,0,0.

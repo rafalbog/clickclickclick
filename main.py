@@ -10,6 +10,7 @@ from clickclickclick.planner.openai import ChatGPTPlanner
 from clickclickclick.finder.local_ollama import OllamaFinder
 from clickclickclick.finder.openai import OpenAIFinder
 from clickclickclick.planner.local_ollama import OllamaPlanner
+from clickclickclick.finder.mlx import MLXFinder
 
 
 @click.group()
@@ -60,6 +61,8 @@ def run(task_prompt, platform, planner_model, finder_model):
         finder = GeminiFinder(c, executor)
     elif finder_model == "ollama":
         finder = OllamaFinder(c, executor)
+    elif finder_model == "mlx":
+        finder = MLXFinder(c, executor)
 
     if not task_prompt:
         task_prompt = c.SAMPLE_TASK_PROMPT

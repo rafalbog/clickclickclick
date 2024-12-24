@@ -27,7 +27,7 @@ The best result currently comes from using GPT 4o/4o-mini as planner and Gemini 
 
 1. This project needs `adb` to be installed on your local machine where the code is being executed.
 2. Enable USB debugging on the android phone.
-3. Python >= 3.11
+3. Python >= 3.11 (== 3.12 if using `mlx` for finder on Apple silicon)
 
 # How to install
 
