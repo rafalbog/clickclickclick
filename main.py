@@ -10,6 +10,7 @@ from clickclickclick.planner.openai import ChatGPTPlanner
 from clickclickclick.finder.local_ollama import OllamaFinder
 from clickclickclick.finder.openai import OpenAIFinder
 from clickclickclick.planner.local_ollama import OllamaPlanner
+from clickclickclick.finder.mlx import MLXFinder
 
 
 @click.group()

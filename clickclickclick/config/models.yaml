@@ -19,8 +19,10 @@ gemini:
       response_mime_type: text/plain
   finder:
     image_width: 768
+    image_height: 768
     android:
-      image_width: 768
+      output_width: 1000  # max range of outputted values
+      output_height: 1000
     osx:
       image_width: 768
     generation_config:
@@ -48,3 +50,11 @@ ollama:
   model_name: llama3.2:latest  # llama3.2:latest doesnt support image
   finder:
     model_name: llama3.2-vision  # llama3.2-vision doesnt support function calling yet
+
+mlx:
+  image_width: 512
+  image_height: 512
+  output_width: 100  # max range of outputted values
+  output_height: 100
+  finder:
+    output_width: 100
