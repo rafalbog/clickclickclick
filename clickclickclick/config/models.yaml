@@ -58,3 +58,4 @@ mlx:
   output_height: 100
   finder:
     output_width: 100
+    model_path: mlx-community/Molmo-7B-D-0924-4bit
