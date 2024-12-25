@@ -44,6 +44,8 @@ def get_finder(finder_model, config, executor):
         return GeminiFinder(config, executor)
     elif finder_model.lower() == "ollama":
         return OllamaFinder(config, executor)
+    elif finder_model.lower() == "mlx":
+        return MLXFinder(config, executor)
     raise ValueError(f"Unsupported finder model: {finder_model}")
 
 
