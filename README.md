@@ -2,7 +2,7 @@
 
 ### A framework to enable autonomous android and computer use using any LLM (local or remote)
 
-![click3](https://github.com/user-attachments/assets/103afd59-ae29-45d2-9d77-75375b1538a0)
+![click3](https://github.com/user-attachments/assets/493a6d39-c9d1-4e7c-b413-7f01140bbadb)
 
 ## Demos
 
@@ -20,7 +20,7 @@ Currently supporting local models via Ollama (Llama 3.2-vision), Gemini, GPT 4o.
 
 The best result currently comes from using GPT 4o/4o-mini as planner and Gemini Pro/Flash as finder.
 
-![model recommendations](https://github.com/user-attachments/assets/355865f9-704b-483c-a23b-5dc9be54aeda)
+![model recommendations](https://github.com/user-attachments/assets/460e9f52-749c-4f2a-997a-57cb04879420)
 
 
 #### Prerequisites
