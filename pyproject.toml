@@ -1,6 +1,6 @@
 [project]
 name = "click3"
-version = "0.2.0"
+version = "0.3.0"
 description = "A framework for android and computer use by LLMs, both local and remote."
 authors = [
     { name = "BandarLabs", email = "74_thetas_oranges@icloud.com" }
