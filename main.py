@@ -1,16 +1,17 @@
-import click
 import os
+
+import click
 from clickclickclick.config import get_config
-from clickclickclick.planner.task import execute_with_timeout, execute_task
-from clickclickclick.executor.osx import MacExecutor
 from clickclickclick.executor.android import AndroidExecutor
-from clickclickclick.planner.gemini import GeminiPlanner
+from clickclickclick.executor.wind import WindowsExecutor
 from clickclickclick.finder.gemini import GeminiFinder
-from clickclickclick.planner.openai import ChatGPTPlanner
 from clickclickclick.finder.local_ollama import OllamaFinder
-from clickclickclick.finder.openai import OpenAIFinder
-from clickclickclick.planner.local_ollama import OllamaPlanner
 from clickclickclick.finder.mlx import MLXFinder
+from clickclickclick.finder.openai import OpenAIFinder
+from clickclickclick.planner.gemini import GeminiPlanner
+from clickclickclick.planner.local_ollama import OllamaPlanner
+from clickclickclick.planner.openai import ChatGPTPlanner
+from clickclickclick.planner.task import execute_task, execute_with_timeout
 
 
 @click.group()
@@ -19,8 +20,8 @@ def cli():
 
 
 def get_executor(platform):
-    if platform.lower() == "osx":
-        return MacExecutor()
+    if platform.lower() == "win":
+        return WindowsExecutor()
     return AndroidExecutor()
 
 
@@ -90,22 +91,14 @@ def setup_openai_or_azure(existing=False):
     )
     if version.lower() == "openai":
         os.environ["AZURE_OPENAI_API_KEY"] = click.prompt(
-            (
-                "Enter your OpenAI API key (press enter to use existing)"
-                if existing
-                else "Enter your OpenAI API key"
-            ),
+            ("Enter your OpenAI API key (press enter to use existing)" if existing else "Enter your OpenAI API key"),
             hide_input=True,
             default=os.getenv("AZURE_OPENAI_API_KEY", ""),
         )
         os.environ["OPENAI_API_TYPE"] = "openai"
     elif version.lower() == "azure":
         os.environ["AZURE_OPENAI_API_KEY"] = click.prompt(
-            (
-                "Enter your Azure API key (press enter to use existing)"
-                if existing
-                else "Enter your Azure API key"
-            ),
+            ("Enter your Azure API key (press enter to use existing)" if existing else "Enter your Azure API key"),
             hide_input=True,
             default=os.getenv("AZURE_OPENAI_API_KEY", ""),
         )
@@ -168,9 +161,7 @@ def setup():
     """Setup command to configure planner and finder"""
     planner = click.prompt("Choose planner model ('gemini', '4o', or 'ollama')", type=str)
     finder = click.prompt(
-        "Choose finder model ('gemini', '4o', or 'ollama') (press enter to use '{}')".format(
-            planner
-        ),
+        "Choose finder model ('gemini', '4o', or 'ollama') (press enter to use '{}')".format(planner),
         type=str,
         default=planner,
     )

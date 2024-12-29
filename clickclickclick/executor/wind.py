@@ -1,16 +1,16 @@
-from . import Executor
-import pyautogui
-from typing import List, Union
-import logging
-import io
 import base64
-from PIL import Image
-import applescript
+import io
+import logging
 from tempfile import NamedTemporaryFile
-from . import logger
+from typing import List, Union
+
+import pyautogui
+from PIL import Image
+
+from . import Executor, logger
 
 
-class MacExecutor(Executor):
+class WindowsExecutor(Executor):
     def __init__(self):
         super().__init__()
         self.screenshot_as_base64 = False
@@ -19,7 +19,8 @@ class MacExecutor(Executor):
     def move_mouse(self, x: int, y: int, observation: str) -> bool:
         try:
             logger.debug(f"move mouse x y {x} {y}")
-            pyautogui.moveTo(y, x, 1)
+            # pyautogui.moveTo expects (x, y), so keep the order consistent:
+            pyautogui.moveTo(x, y, duration=1)
             return True
         except Exception as e:
             logger.exception("Error in move_mouse")
@@ -28,6 +29,7 @@ class MacExecutor(Executor):
     def press_key(self, keys: List[str], observation: str) -> bool:
         try:
             logger.debug(f"press keys {keys}")
+            # Convert all keys to lowercase for consistency
             pyautogui.hotkey(*[k.lower() for k in keys])
             return True
         except Exception as e:
@@ -73,35 +75,42 @@ class MacExecutor(Executor):
     def click_at_a_point(self, x: int, y: int, observation: str) -> bool:
         try:
             logger.debug(f"click at a point x y {x} {y}")
-            pyautogui.click(x=y, y=x, duration=1)
+            # pyautogui.click expects (x, y)
+            pyautogui.click(x=x, y=y, duration=1)
             return True
         except Exception as e:
             logger.exception("Error in click_at_a_point")
             return False
 
     def swipe_left(self, observation: str) -> bool:
-        raise NotImplementedError("Swipe left is not implemented on Mac")
+        # You might implement a Windows-specific gesture or fallback to NotImplementedError
+        raise NotImplementedError("Swipe left is not implemented on Windows")
 
     def swipe_right(self, observation: str) -> bool:
-        raise NotImplementedError("Swipe right is not implemented on Mac")
+        raise NotImplementedError("Swipe right is not implemented on Windows")
 
     def swipe_up(self, observation: str) -> bool:
-        raise NotImplementedError("Swipe up is not implemented on Mac")
+        raise NotImplementedError("Swipe up is not implemented on Windows")
 
     def swipe_down(self, observation: str) -> bool:
-        raise NotImplementedError("Swipe down is not implemented on Mac")
+        raise NotImplementedError("Swipe down is not implemented on Windows")
 
     def volume_up(self, observation: str) -> bool:
-        raise NotImplementedError("Volume up is not implemented on Mac")
+        # You could implement Windows-specific logic for volume control here
+        raise NotImplementedError("Volume up is not implemented on Windows")
 
     def volume_down(self, observation: str) -> bool:
-        raise NotImplementedError("Volume down is not implemented on Mac")
+        # You could implement Windows-specific logic for volume control here
+        raise NotImplementedError("Volume down is not implemented on Windows")
 
     def navigate_back(self, observation: str) -> bool:
-        raise NotImplementedError("Navigate back is not implemented on Mac")
+        # Windows-specific "go back" (like Alt+Left in some contexts)
+        # or raise NotImplementedError if uncertain
+        raise NotImplementedError("Navigate back is not implemented on Windows")
 
     def minimize_app(self, observation: str) -> bool:
-        raise NotImplementedError("Minimize app is not implemented on Mac")
+        # Windows-specific logic to minimize the currently active window
+        raise NotImplementedError("Minimize app is not implemented on Windows")
 
     def screenshot(
         self, observation: str, as_base64: bool = False, use_tempfile: bool = False
@@ -138,11 +147,5 @@ class MacExecutor(Executor):
             return "" if as_base64 or use_tempfile else None
 
     def apple_script(self, script: str, observation: str) -> bool:
-        try:
-            logger.debug(f"Run apple script {script}")
-            result = applescript.AppleScript(script).run()
-            logger.info(result)
-            return True
-        except Exception as e:
-            logger.exception(f"Error in apple_script {e}")
-            return False
+        # AppleScript is specific to macOS, so we raise an error
+        raise NotImplementedError("AppleScript is not supported on Windows")

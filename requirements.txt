@@ -5,7 +5,6 @@ fastapi
 futures
 pillow
 google-generativeai
-py-applescript
 openai==1.55.0
 ollama
 google.ai.generativelanguage

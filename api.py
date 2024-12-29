@@ -1,17 +1,17 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from clickclickclick.planner.task import execute_with_timeout, execute_task
-from clickclickclick.executor.osx import MacExecutor
+import uvicorn
+from clickclickclick.config import get_config
 from clickclickclick.executor.android import AndroidExecutor
-from clickclickclick.planner.gemini import GeminiPlanner
 from clickclickclick.finder.gemini import GeminiFinder
-from clickclickclick.planner.openai import ChatGPTPlanner
 from clickclickclick.finder.local_ollama import OllamaFinder
 from clickclickclick.finder.openai import OpenAIFinder
+from clickclickclick.planner.gemini import GeminiPlanner
 from clickclickclick.planner.local_ollama import OllamaPlanner
-from clickclickclick.config import get_config
-import uvicorn
+from clickclickclick.planner.openai import ChatGPTPlanner
+from clickclickclick.planner.task import execute_task, execute_with_timeout
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
+from github.clickclickclick.clickclickclick.executor.wind import WindowsExecutor
 
 app = FastAPI()
 
@@ -32,8 +32,8 @@ def execute_task_api(request: TaskRequest):
 
     c = get_config(platform, planner_model, finder_model)
 
-    if platform == "osx":
-        executor = MacExecutor()
+    if platform == "win":
+        executor = WindowsExecutor()
     elif platform == "android":
         executor = AndroidExecutor()
     else:
@@ -60,9 +60,7 @@ def execute_task_api(request: TaskRequest):
     else:
         raise HTTPException(status_code=400, detail=f"Unsupported finder model: {finder_model}")
 
-    result = execute_with_timeout(
-        execute_task, c.TASK_TIMEOUT_IN_SECONDS, task_prompt, executor, planner, finder, c
-    )
+    result = execute_with_timeout(execute_task, c.TASK_TIMEOUT_IN_SECONDS, task_prompt, executor, planner, finder, c)
 
     if result is not None:
         return {"result": result}
